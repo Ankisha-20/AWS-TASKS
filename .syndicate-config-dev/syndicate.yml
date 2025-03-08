@@ -1,0 +1,17 @@
+account_id: '196241772369'
+deploy_target_bucket: syndicate-education-platform-custom-sandbox-artifacts-sbox01/ea25b07e/task03
+expiration: 2025-03-08 22:00:46.523414+00:00
+extended_prefix_mode: true
+iam_permissions_boundary: arn:aws:iam::196241772369:policy/eo_role_boundary
+project_path: C:\Users\ankisha_gupta\Documents\AWS-TASKS
+region: eu-central-1
+resources_prefix: cmtr-ea25b07e-
+tags:
+  run_id: JAP-09
+  run_type: stm
+  type: user
+  user_id: ea25b07e
+temp_aws_access_key_id: ASIAS3MHLZ5IULGHBIQX
+temp_aws_secret_access_key: EceuzUfmXcW6uTqBOF68eZYRoQTZqJoD2WhdnyYI
+temp_aws_session_token: IQoJb3JpZ2luX2VjEB4aCXVzLWVhc3QtMSJGMEQCIE63lXY1Qs6PK2u2gir9aZi5wL09I9+2sPByNFfV0tQ3AiAGWVI0X/OpXLSs9m4loqh0OI0kJK+xCU5JKiRnB0foxSrWAghmEAEaDDE5NjI0MTc3MjM2OSIMHMKombg6/7GY2m13KrMCNXJDi2isbWRnP9mgB0yI8qTuyLsYY6T9VILOce6x6A822J72Bi/LOPzcl/XcGW+XQzHKfrZFO/Ryzd8IyGgSjCT1Kru4bH8y4JzFTAH5sUPgLO77KlG3+6hFXhTaQA/WlmVg7j8WocLyU4f1ZlIqzZtSv25uV+N+Aq7030aZh9ykE2yO7RS2Q8bhdwsThfXwqsjHaEq9tzqmrIKD7i+lSZ61gcbbovJmAtxM7Op9u0tlxQr+bkDe6oVU9iapIqNAb4686IYIkHNLBfZQQGxE3TY+Sf+tMy2WQnwXvRxIC0+Dy6cCHh+2JhPk9quo+RpO0tRci4rhcaS7cFj8Isu3hCeBwjiMCuT/BcJtZcQt/c8ejvjwGpruRo4LkEpAW6BTlciroEKpSfzwyTssfx/iaFdnhzDO5LK+BjqeAb3Hp6t8T6ZtjWeOVtCvcbteodgIWmH89JnCwxscOgrWAAoRk4P68BeA8LO7PjikaTfoSYr2PUZ5SQ/wUN9zQ6TsNZbnd4igcOdD5aYtMwFKe8nSrcFIlaQKIOhZbkZeODqJCrbholU2N6bomTEUwMQE+30XB0FQqyEWdI+UgyTXEqT4ppw+RmwqKaXq3oKMaJlpWR7Cuu/sHrCI4BMG
+use_temp_creds: false
