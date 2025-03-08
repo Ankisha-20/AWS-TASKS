@@ -25,6 +25,15 @@
     "resource_type": "iam_policy",
     "tags": {}
   },
+  "hello_world-role": {
+    "predefined_policies": [],
+    "principal_service": "lambda",
+    "custom_policies": [
+      "lambda-basic-execution"
+    ],
+    "resource_type": "iam_role",
+    "tags": {}
+  },
   "task3_api": {
     "resource_type": "api_gateway",
     "deploy_stage": "api",
@@ -33,7 +42,6 @@
       "/hello": {
         "enable_cors": false,
         "GET": {
-
           "authorization_type": "NONE",
           "integration_type": "lambda",
           "lambda_name": "hello_world",
