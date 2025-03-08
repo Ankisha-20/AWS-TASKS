@@ -2,7 +2,7 @@
   "version": "1.0",
   "name": "hello_world",
   "func_name": "lambdas/hello_world/index.handler",
-  "resource_type": "lambda",
+  "resource_type": "lambda1",
   "iam_role_name": "hello_world-role",
   "runtime": "nodejs20.x",
   "memory": 128,
