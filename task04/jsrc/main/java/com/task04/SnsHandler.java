@@ -15,6 +15,11 @@ import java.util.Map;
 	aliasName = "learn",
 	logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
 )
+
+//@SnsEventSource(
+//		targetTopic = "lambda_topic"
+//)
+
 public class SnsHandler implements RequestHandler<Object, Map<String, Object>> {
 
 	public Map<String, Object> handleRequest(Object request, Context context) {
