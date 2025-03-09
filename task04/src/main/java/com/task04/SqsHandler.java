@@ -9,18 +9,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 @LambdaHandler(
-    lambdaName = "sns_handler",
-	roleName = "sns_handler-role",
+    lambdaName = "sqs_handler",
+	roleName = "sqs_handler-role",
 	isPublishVersion = true,
 	aliasName = "learn",
 	logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
 )
 
-//@SnsEventSource(
-//		targetTopic = "lambda_topic"
-//)
+@SqsTriggerEventSource(
+		targetQueue = "async_queue",
+		batchSize = 10
+)
 
-public class SnsHandler implements RequestHandler<Object, Map<String, Object>> {
+public class SqsHandler implements RequestHandler<Object, Map<String, Object>> {
 
 	public Map<String, Object> handleRequest(Object request, Context context) {
 		System.out.println("Hello from lambda");
