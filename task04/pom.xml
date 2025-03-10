@@ -31,45 +31,6 @@
             <artifactId>deployment-configuration-annotations</artifactId>
             <version>${syndicate.java.plugin.version}</version>
         </dependency>
-
-
-
-        <!-- AWS Lambda Events (For SQS & SNS) -->
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-lambda-java-events</artifactId>
-            <version>3.11.1</version>  <!-- Latest version -->
-        </dependency>
-
-        <!-- AWS SDK for SQS & SNS -->
-        <dependency>
-            <groupId>software.amazon.awssdk</groupId>
-            <artifactId>sqs</artifactId>
-            <version>2.21.42</version> <!-- Use the latest version -->
-        </dependency>
-
-        <dependency>
-            <groupId>software.amazon.awssdk</groupId>
-            <artifactId>sns</artifactId>
-            <version>2.21.42</version> <!-- Use the latest version -->
-        </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>com.syndicate</groupId>-->
-<!--            <artifactId>syndicate-deployment</artifactId>-->
-<!--            <version>1.15.1</version>  &lt;!&ndash; Use the correct version &ndash;&gt;-->
-<!--        </dependency>-->
-
-
-
-        <!-- AWS Lambda Java Runtime -->
-<!--        <dependency>-->
-<!--            <groupId>com.amazonaws</groupId>-->
-<!--            <artifactId>aws-lambda-java-runtime-interface-client</artifactId>-->
-<!--            <version>2.2.1</version>-->
-<!--        </dependency>-->
-
-
     </dependencies>
 
     <build>
@@ -78,20 +39,30 @@
             <resource>
                 <directory>${resources.dir}</directory>
             </resource>
-        </resources>        
+        </resources>
         <plugins>
-
             <plugin>
                 <groupId>net.sf.aws-syndicate</groupId>
                 <artifactId>deployment-configuration-maven-plugin</artifactId>
-                <version>1.15.0</version>
+                <version>${syndicate.java.plugin.version}</version>
                 <configuration>
-                    <packages>com.task04</packages> <!-- Ensure correct package -->
-                    <errorsAllowed>true</errorsAllowed>
-                    <fileName/>
+                    <packages>
+                        <package>com.task04</package>
+                    </packages>
+                    <fileName>${project.name}-${project.version}.jar</fileName>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>generate-config</id>
+                        <phase>compile</phase>
+                        <inherited>false</inherited>
+                        <goals>
+                            <goal>gen-deployment-config</goal>
+                            <goal>assemble-lambda-layer-files</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
