@@ -14,11 +14,6 @@
                     "operation": "GetItem",
                     "key": {
                         "id": $util.dynamodb.toDynamoDBJson($ctx.args.id),
-                    },
-                       "attributeValues": {
-                         "userId": { "N": "$ctx.args.userId" },
-                         "createdAt": { "S": "$util.time.nowISO8601()" },
-                         "payLoad": { "S": "$util.toJson($ctx.args.payLoad)" }
-                       }
+                    }
                 }
                 
