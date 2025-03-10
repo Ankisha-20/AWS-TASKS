@@ -1,68 +1,97 @@
-const AWS = require("aws-sdk");
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { v4 as uuidv4 } from "uuid";
 
-// Initialize DynamoDB DocumentClient
-const dynamodb = new AWS.DynamoDB.DocumentClient();
+// Initialize DynamoDB Client
+const client = new DynamoDBClient({});
+const dynamoDB = DynamoDBDocumentClient.from(client);
+const TABLE_NAME = process.env.TABLE_NAME || "Events";
 
-// Environment variable for the Audit table name
-const AUDIT_TABLE_NAME = process.env.AUDIT_TABLE;
+export const handler = async (event) => {
+  console.log("Received event:", JSON.stringify(event, null, 2));
 
-exports.handler = async (event) => {
-    console.log("DynamoDB Stream Event: ", JSON.stringify(event, null, 2));
+  const auditPromises = event.Records.map(record => processRecord(record));
 
-    try {
-        // Loop through all records in the Stream
-        for (const record of event.Records) {
-            // Only handle INSERT or MODIFY events
-            if (record.eventName === "INSERT" || record.eventName === "MODIFY") {
-                const newImage = record.dynamodb.NewImage;
-                const oldImage = record.dynamodb.OldImage;
 
-                // Extract the 'id' field (primary key) from the record
-                const recordId = newImage.id.S;
-
-                // Generate a unique timestamp for the audit entry
-                const timestamp = new Date().toISOString();
-
-                // Determine the action type and details
-                let action = "";
-                let details = "";
-                if (record.eventName === "INSERT") {
-                    action = "INSERT";
-                    details = `New item created: ${JSON.stringify(newImage)}`;
-                } else if (record.eventName === "MODIFY") {
-                    action = "MODIFY";
-                    details = `Item modified from: ${JSON.stringify(oldImage || {})} to: ${JSON.stringify(newImage || {})}`;
-                }
-
-                // Construct the audit entry
-                const auditEntry = {
-                    id: `${timestamp}_${recordId}`, // Unique ID for each audit entry
-                    recordId: recordId,
-                    action: action,
-                    details: details,
-                    timestamp: timestamp,
-                };
-
-                // Write the audit entry to the Audit table
-                await dynamodb.put({
-                    TableName: AUDIT_TABLE_NAME,
-                    Item: auditEntry,
-                }).promise();
-
-                console.log("Audit entry created: ", JSON.stringify(auditEntry));
-            }
-        }
-
-        return {
-            statusCode: 200,
-            body: JSON.stringify("Stream processed successfully"),
-        };
-    } catch (error) {
-        console.error("Error processing DynamoDB Stream: ", error);
-
-        return {
-            statusCode: 500,
-            body: JSON.stringify("Error processing stream"),
-        };
-    }
+  try {
+    await Promise.all(auditPromises);
+    console.log("Successfully processed all records");
+    return { statusCode: 200, body: "Success" };
+  } catch (error) {
+    console.error("Error processing records:", error);
+    throw error;
+  }
 };
+
+/**
+ * Process individual DynamoDB Stream record
+ * @param {Object} record - DynamoDB Stream record
+ * @returns {Promise} - Promise from DynamoDB put operation
+ */
+async function processRecord(record) {
+  const eventName = record.eventName;
+  const dynamodbRecord = record.dynamodb;
+
+  const modificationTime = new Date().toISOString();
+  const itemKey = dynamodbRecord.Keys.key.S;
+
+  // Create audit item with required fields
+  const auditItem = {
+    id: uuidv4(),
+    itemKey: itemKey,
+    modificationTime: modificationTime
+  };
+
+  // Process based on event type
+  if (eventName === "INSERT") {
+    const newImage = unmarshallImage(dynamodbRecord.NewImage);
+    auditItem.newValue = { key: newImage.key, value: newImage.value };
+  } else if (eventName === "MODIFY") {
+    const oldImage = unmarshallImage(dynamodbRecord.OldImage);
+    const newImage = unmarshallImage(dynamodbRecord.NewImage);
+
+    auditItem.oldValue = oldImage.value;
+    auditItem.newValue = newImage.value;
+    auditItem.updatedAttribute = "value"; // Assuming only 'value' changes
+  } else if (eventName === "REMOVE") {
+    const oldImage = unmarshallImage(dynamodbRecord.OldImage);
+    auditItem.oldValue = oldImage;
+  }
+
+  console.log("Saving audit item:", JSON.stringify(auditItem, null, 2));
+
+  const params = new PutCommand({
+    TableName: TABLE_NAME,
+    Item: auditItem
+  });
+console.log("Attempting to write to table:", params.TableName);
+
+  return await dynamoDB.send(params);
+}
+
+/**
+ * Convert DynamoDB attribute values to JavaScript values
+ * @param {Object} image - DynamoDB image with attribute values
+ * @returns {Object} - Unmarshalled JavaScript object
+ */
+function unmarshallImage(image) {
+  if (!image) return null;
+
+  const result = {};
+
+  for (const [key, value] of Object.entries(image)) {
+    if (value.S !== undefined) {
+      result[key] = value.S;
+    } else if (value.N !== undefined) {
+      result[key] = Number(value.N);
+    } else if (value.BOOL !== undefined) {
+      result[key] = value.BOOL;
+    } else if (value.M !== undefined) {
+      result[key] = unmarshallImage(value.M);
+    } else if (value.L !== undefined) {
+      result[key] = value.L.map(item => unmarshallImage(item));
+    }
+  }
+
+  return result;
+}
