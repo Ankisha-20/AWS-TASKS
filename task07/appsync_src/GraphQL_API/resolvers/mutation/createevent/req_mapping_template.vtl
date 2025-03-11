@@ -1,17 +1,18 @@
-## Request Mapping Template for createEvent Mutation
+## Below example shows how to look up an item with a Primary Key of "id" from GraphQL arguments
+                ## The helper $util.dynamodb.toDynamoDBJson automatically converts to a DynamoDB formatted request
+                ## There is a "context" object with arguments, identity, headers, and parent field information you can access.
+                ## It also has a shorthand notation available:
+                ##  - $context or $ctx is the root object
+                ##  - $ctx.arguments or $ctx.args contains arguments
+                ##  - $ctx.identity has caller information, such as $ctx.identity.username
+                ##  - $ctx.request.headers contains headers, such as $context.request.headers.xyz
+                ##  - $ctx.source is a map of the parent field, for instance $ctx.source.xyz
+                ## Read more: https://docs.aws.amazon.com/appsync/latest/devguide/resolver-mapping-template-reference.html
 
-#set($uuid = $util.autoId())         ## Generate a unique UUID (v4)
-#set($createdAt = $util.time.nowISO8601()) ## Generate the current timestamp in ISO 8601 format
-
-{
-    "version": "2018-05-29",
-    "operation": "PutItem",
-    "key": {
-        "id": { "S": "$uuid" }       ## Store the UUID as the hash key
-    },
-    "attributeValues": {
-        "userId": { "N": "$ctx.args.userId" },    ## Save userId as a number
-        "createdAt": { "S": "$createdAt" },       ## Save createdAt as ISO 8601 string
-        "payLoad": { "S": "$ctx.args.payLoad" }   ## Save payLoad as a JSON string
-    }
-}
+                {
+                    "version": "2018-05-29",
+                    "operation": "GetItem",
+                    "key": {
+                        "id": $util.dynamodb.toDynamoDBJson($ctx.args.id),
+                    }
+                }
