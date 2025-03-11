@@ -1,8 +1,8 @@
-#if($ctx.error)
-  $util.error($ctx.error.message, $ctx.error.type)
-#end
+## Pass back the result from DynamoDB to the client in the desired format.
 
 {
-  "id": "$context.result.id",
-  "createdAt": "$context.result.createdAt"
+  "id": "$ctx.result.id.S",           ## Extract the 'id' field
+  "userId": $ctx.result.userId.N,     ## Extract the 'userId' field
+  "createdAt": "$ctx.result.createdAt.S", ## Extract the 'createdAt' field
+  "payLoad": $util.parseJson($ctx.result.payLoad.S) ## Parse the payload as JSON
 }

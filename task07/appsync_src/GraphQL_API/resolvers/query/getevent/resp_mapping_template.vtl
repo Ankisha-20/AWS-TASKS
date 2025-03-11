@@ -1,5 +1,15 @@
-#if($ctx.error)
-  $util.error($ctx.error.message, $ctx.error.type)
-#end
+## Resolver for getEvent Query
+## Maps the DynamoDB result into the desired GraphQL response structure.
 
-$util.toJson($ctx.result)
+#if($ctx.error)
+  ## If there's an error, return it to the client
+  $util.error($ctx.error.message, $ctx.error.type)
+#else
+  ## Map the DynamoDB result to the GraphQL Event type response
+  {
+    "id": "$ctx.result.id.S",           ## Extract the `id` field
+    "userId": $ctx.result.userId.N,     ## Extract the `userId` field
+    "createdAt": "$ctx.result.createdAt.S", ## Extract the `createdAt` field
+    "payLoad": $util.parseJson($ctx.result.payLoad.S) ## Parse `payLoad` field as JSON
+  }
+#end

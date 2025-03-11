@@ -1,7 +1,12 @@
+## Resolver for getEvent Query
+## This template fetches an item from DynamoDB based on the "id" argument passed in the GraphQL query.
+
 {
   "version": "2018-05-29",
   "operation": "GetItem",
   "key": {
-    "id": $util.dynamodb.toDynamoDBJson($ctx.args.id)
+    "id": {
+      "S": "$ctx.args.id"     ## Convert GraphQL argument "id" to DynamoDB Key format
+    }
   }
 }

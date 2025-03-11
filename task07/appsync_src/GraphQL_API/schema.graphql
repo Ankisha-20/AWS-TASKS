@@ -1,38 +1,32 @@
-# Define the structure of your API with the GraphQL
-# schema definition language (SDL) here.
-scalar AWSJSON
+# GraphQL Schema for Event operations
 
-schema {
-	query: Query
-	mutation: Mutation
+type EventPayloadMeta {
+  key1: Int
+  key2: String
 }
 
-type Query {
-	getEvent(id: ID!): Event
-}
-
-type Mutation {
-	createEvent(userId: Int!, payLoad: AWSJSON!): EventCreationResponse
-}
-
-type EventCreationResponse {
-	id: ID!
-	createdAt: String!
+type EventPayload {
+  meta: EventPayloadMeta
 }
 
 type Event {
-	id: ID!
-	userId: Int!
-	createdAt: String!
-	payLoad: Payload
+  id: ID!                    # Unique identifier for the event (uuidv4)
+  userId: Int!               # User ID who created the event
+  createdAt: String!         # ISO 8601 formatted creation timestamp
+  payLoad: EventPayload      # Payload containing metadata
 }
 
-type Payload {
-	meta: Meta
+type Mutation {
+  # Create a new event
+  createEvent(userId: Int!, payLoad: AWSJSON!): Event
 }
 
-type Meta {
-	key1: Int
-	key2: String
+type Query {
+  # Fetch an event by ID
+  getEvent(id: ID!): Event
 }
-    
+
+schema {
+  query: Query
+  mutation: Mutation
+}
