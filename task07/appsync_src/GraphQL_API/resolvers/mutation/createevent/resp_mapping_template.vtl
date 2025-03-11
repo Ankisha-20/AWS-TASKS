@@ -2,11 +2,12 @@
 
 #if($ctx.error)
   $util.error($ctx.error.message, $ctx.error.type)
-#elseif(!$ctx.result)  ## If there's no DynamoDB response
-  $util.error("Failed to insert the event into DynamoDB", "DynamoDBError")
+#elseif(!$ctx.result)  ## If DynamoDB didn't return a valid result
+  $util.error("Failed to create the event", "DynamoDBError")
 #else
+  ## Ensure proper response formatting
   {
-    "id": "$ctx.result.id.S",              ## UUID of the newly created event
-    "createdAt": "$ctx.result.createdAt.S" ## CreatedAt timestamp
+    "id": "$ctx.result.id.S",                ## Extract and return the `id` (UUID v4 as a string)
+    "createdAt": "$ctx.result.createdAt.S"   ## Extract and return the `createdAt` in ISO 8601
   }
 #end

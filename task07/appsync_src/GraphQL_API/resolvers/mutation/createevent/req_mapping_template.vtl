@@ -1,15 +1,17 @@
-## Resolver for createEvent mutation
-#set($uuid = $util.autoId())         ## Generate a unique id
-#set($createdAt = $util.time.nowISO8601()) ## Set the creation time
+## Request Mapping Template for createEvent Mutation
+
+#set($uuid = $util.autoId())         ## Generate a unique UUID (v4)
+#set($createdAt = $util.time.nowISO8601()) ## Generate the current timestamp in ISO 8601 format
+
 {
-  "version": "2018-05-29",
-  "operation": "PutItem",
-  "key": {
-    "id": { "S": "$uuid" }       ## Primary key (hash key)
-  },
-  "attributeValues": {
-    "userId": { "N": "$ctx.args.userId" },        ## userId as Number
-    "createdAt": { "S": "$createdAt" },           ## createdAt as ISO 8601 String
-    "payLoad": { "S": "$ctx.args.payLoad" }       ## payLoad as String
-  }
+    "version": "2018-05-29",
+    "operation": "PutItem",
+    "key": {
+        "id": { "S": "$uuid" }       ## Store the UUID as the hash key
+    },
+    "attributeValues": {
+        "userId": { "N": "$ctx.args.userId" },    ## Save userId as a number
+        "createdAt": { "S": "$createdAt" },       ## Save createdAt as ISO 8601 string
+        "payLoad": { "S": "$ctx.args.payLoad" }   ## Save payLoad as a JSON string
+    }
 }
