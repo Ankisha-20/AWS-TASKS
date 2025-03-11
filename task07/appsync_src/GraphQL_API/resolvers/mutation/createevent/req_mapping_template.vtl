@@ -1,18 +1,15 @@
-## Resolver for createEvent Mutation
-## This template creates a new item in the DynamoDB table using the GraphQL arguments.
-
-#set($uuid = $util.autoId())         ## Generate a unique UUID for the `id` field
-#set($createdAt = $util.time.nowISO8601()) ## Current time in ISO 8601 format for `createdAt`
-
+## Resolver for createEvent mutation
+#set($uuid = $util.autoId())         ## Generate a unique id
+#set($createdAt = $util.time.nowISO8601()) ## Set the creation time
 {
-    "version": "2018-05-29",
-    "operation": "PutItem",
-    "key": {
-        "id": { "S": "$uuid" }       ## Primary key (hash key) for the DynamoDB table
-    },
-    "attributeValues": {
-        "userId": { "N": "$ctx.args.userId" },        ## The user ID passed as an argument
-        "createdAt": { "S": "$createdAt" },           ## Current timestamp
-        "payLoad": { "S": "$ctx.args.payLoad" }       ## Payload passed as an argument
-    }
+  "version": "2018-05-29",
+  "operation": "PutItem",
+  "key": {
+    "id": { "S": "$uuid" }       ## Primary key (hash key)
+  },
+  "attributeValues": {
+    "userId": { "N": "$ctx.args.userId" },        ## userId as Number
+    "createdAt": { "S": "$createdAt" },           ## createdAt as ISO 8601 String
+    "payLoad": { "S": "$ctx.args.payLoad" }       ## payLoad as String
+  }
 }
