@@ -1,32 +1,10 @@
-# GraphQL Schema for Event operations
-
-type EventPayloadMeta {
-  key1: Int
-  key2: String
-}
-
-type EventPayload {
-  meta: EventPayloadMeta
-}
-
-type Event {
-  id: ID!                    # Unique identifier for the event (uuidv4)
-  userId: Int!               # User ID who created the event
-  createdAt: String!         # ISO 8601 formatted creation timestamp
-  payLoad: EventPayload      # Payload containing metadata
-}
-
-type Mutation {
-  # Create a new event
-  createEvent(userId: Int!, payLoad: AWSJSON!): Event
-}
+# Define the structure of your API with the GraphQL
+# schema definition language (SDL) here.
 
 type Query {
-  # Fetch an event by ID
-  getEvent(id: ID!): Event
+	test: String
 }
 
 schema {
-  query: Query
-  mutation: Mutation
+	query: Query
 }
