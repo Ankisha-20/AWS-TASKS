@@ -14,14 +14,10 @@
             "dynamodb:DeleteItem",
             "ssm:PutParameter",
             "ssm:GetParameter",
-            "kms:Decrypt",
-            "dynamodb:BatchGetItem",
-            "dynamodb:BatchWriteItem"
+            "kms:Decrypt"
           ],
           "Effect": "Allow",
-          "Resource": [
-          "arn:aws:dynamodb:eu-central-1:897722692779:table/cmtr-ea25b07e-Events-6s8d"
-          ]
+          "Resource": "*"
         }
       ],
       "Version": "2012-10-17"
