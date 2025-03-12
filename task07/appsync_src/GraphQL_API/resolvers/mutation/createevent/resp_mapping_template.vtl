@@ -1,15 +1,8 @@
-## Response Mapping Template for createEvent Mutation
-
 #if($ctx.error)
-  ## Handle any potential DynamoDB errors
   $util.error($ctx.error.message, $ctx.error.type)
-#elseif(!$ctx.result)
-  ## Handle a DynamoDB response with no result
-  $util.error("Failed to insert event into DynamoDB", "DynamoDBError")
-#else
-  ## Map the output to match the expected GraphQL response
-  {
-    "id": "$ctx.result.id.S",              ## Return the DynamoDB `id` as a string
-    "createdAt": "$ctx.result.createdAt.S" ## Return the DynamoDB `createdAt` as an ISO 8601 string
-  }
 #end
+
+{
+  "id": "$context.result.id",
+  "createdAt": "$context.result.createdAt"
+}
